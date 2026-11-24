@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>在线XML格式化工具 - 免费XML美化、压缩与校验</title>
+<meta name="description" content="免费的在线XML格式化工具，支持XML美化缩进、压缩、语法校验与高亮显示。所有处理均在本地浏览器完成，无需上传文件，安全快速。">
+<meta name="keywords" content="XML格式化,XML美化,XML压缩,XML校验,在线XML工具,XML缩进,XML高亮">
+<meta name="robots" content="index,follow">
+<meta name="author" content="开发者工具箱">
+<link rel="canonical" href="https://your-domain.com/xml-formatter/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="在线XML格式化工具 - 免费XML美化、压缩与校验">
+<meta property="og:description" content="本地处理的在线XML格式化工具，支持美化、压缩、语法校验与高亮。">
+<meta property="og:url" content="https://your-domain.com/xml-formatter/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "在线XML格式化工具",
+  "description": "免费在线XML美化、压缩、语法校验与高亮工具，本地浏览器处理。",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" }
+}
+</script>
+<style>
+  :root {
+    --bg: #f5f7fb; --surface: #ffffff; --surface-2: #f8fafc;
+    --border: #e2e8f0; --text: #1e293b; --text-muted: #64748b;
+    --primary: #4f46e5; --primary-hover: #4338ca; --primary-soft: #eef2ff;
+    --success: #059669; --success-soft: #ecfdf5;
+    --error: #dc2626; --error-soft: #fef2f2;
+    --code-bg: #fbfcfe; --shadow: 0 1px 3px rgba(15,23,42,.08),0 8px 24px rgba(15,23,42,.05);
+    --tok-tag: #2563eb; --tok-attr: #7c3aed; --tok-text: #334155;
+    --tok-comment: #94a3b8; --tok-cdata: #0891b2; --tok-pi: #d97706; --tok-doctype: #db2777;
+  }
+  [data-theme="dark"] {
+    --bg: #0f172a; --surface: #1e293b; --surface-2: #172033;
+    --border: #334155; --text: #e2e8f0; --text-muted: #94a3b8;
+    --primary: #818cf8; --primary-hover: #a5b4fc; --primary-soft: #312e81;
+    --success: #34d399; --success-soft: #064e3b;
+    --error: #f87171; --error-soft: #7f1d1d;
+    --code-bg: #0b1220; --shadow: 0 1px 3px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+    --tok-tag: #7dd3fc; --tok-attr: #c4b5fd; --tok-text: #cbd5e1;
+    --tok-comment: #64748b; --tok-cdata: #67e8f9; --tok-pi: #fbbf24; --tok-doctype: #f9a8d4;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg); color: var(--text); line-height:1.6; transition: background .2s,color .2s; }
+  a { color: var(--primary); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+  header { background: var(--surface); border-bottom: 1px solid var(--border); }
+  .nav { display:flex; align-items:center; justify-content:space-between; height:60px; }
+  .logo { font-weight:700; font-size:17px; display:flex; align-items:center; gap:9px; color:var(--text); }
+  .logo-mark { width:30px;height:30px;border-radius:8px;background:var(--primary);color:#fff;
+    display:grid;place-items:center;font-size:11px;font-weight:800;letter-spacing:-.5px; }
+  .nav-links { display:flex; gap:22px; font-size:14px; color:var(--text-muted); align-items:center; }
+  .nav-links a { color:var(--text-muted); }
+  .nav-links a:hover, .nav-links a.active { color:var(--primary); text-decoration:none; }
+  .nav-links a.active { font-weight:700; }
+  .icon-btn { background:var(--surface-2); border:1px solid var(--border); color:var(--text);
+    width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:15px;display:grid;place-items:center; }
+  .icon-btn:hover { border-color:var(--primary); }
+  .hero { text-align:center; padding:38px 20px 26px; }
+  .hero h1 { font-size:30px; margin:0 0 10px; letter-spacing:-.5px; }
+  .hero p { color:var(--text-muted); margin:0 auto; max-width:640px; font-size:15px; }
+  .badges { display:flex; gap:8px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .badge { background:var(--primary-soft); color:var(--primary); font-size:12px; padding:4px 11px; border-radius:99px; font-weight:600; }
+  .toolbar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:14px;
+    background:var(--surface); border:1px solid var(--border); border-radius:12px 12px 0 0; }
+  .btn { border:1px solid var(--border); background:var(--surface); color:var(--text); padding:8px 14px;
+    border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:.15s; white-space:nowrap; }
+  .btn:hover { border-color:var(--primary); color:var(--primary); }
+  .btn-primary { background:var(--primary); border-color:var(--primary); color:#fff; }
+  .btn-primary:hover { background:var(--primary-hover); border-color:var(--primary-hover); color:#fff; }
+  .btn-ghost { background:transparent; }
+  .sep { width:1px; height:24px; background:var(--border); margin:0 2px; }
+  .spacer { flex:1; }
+  select, .file-label { border:1px solid var(--border); background:var(--surface); color:var(--text);
+    padding:8px 10px; border-radius:8px; font-size:13px; cursor:pointer; }
+  .file-label input { display:none; }
+  .panes { display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--border); border-top:none;
+    border-radius:0 0 12px 12px; overflow:hidden; background:var(--surface); box-shadow:var(--shadow); }
+  .pane { display:flex; flex-direction:column; min-width:0; }
+  .pane + .pane { border-left:1px solid var(--border); }
+  .pane-head { padding:9px 14px; background:var(--surface-2); border-bottom:1px solid var(--border);
+    font-size:12px; font-weight:700; color:var(--text-muted); display:flex; justify-content:space-between; align-items:center; }
+  textarea, pre { margin:0; border:0; outline:none; resize:none; padding:16px; width:100%;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; font-size:13px; line-height:1.65;
+    background:var(--code-bg); color:var(--text); tab-size:2; }
+  textarea { height:440px; display:block; }
+  pre { height:440px; overflow:auto; white-space:pre; }
+  textarea::placeholder { color:var(--text-muted); opacity:.7; }
+  .tok-open,.tok-close,.tok-selfclose { color:var(--tok-tag); }
+  .tok-attr { color:var(--tok-attr); }
+  .tok-text { color:var(--tok-text); }
+  .tok-comment { color:var(--tok-comment); font-style:italic; }
+  .tok-cdata { color:var(--tok-cdata); }
+  .tok-pi { color:var(--tok-pi); }
+  .tok-doctype { color:var(--tok-doctype); }
+  .statusbar { display:flex; flex-wrap:wrap; gap:18px; align-items:center; margin-top:12px; padding:12px 16px;
+    background:var(--surface); border:1px solid var(--border); border-radius:10px; font-size:12px; color:var(--text-muted); }
+  .status-ok { color:var(--success); font-weight:600; }
+  .status-err { color:var(--error); font-weight:600; }
+  .status-item b { color:var(--text); font-weight:600; }
+  .notice { margin-top:18px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:22px 26px; }
+  .notice h2 { font-size:18px; margin:0 0 12px; }
+  .notice h3 { font-size:15px; margin:18px 0 6px; }
+  .notice p, .notice li { color:var(--text-muted); font-size:14px; }
+  .notice ul { padding-left:20px; margin:8px 0; }
+  .notice li { margin:4px 0; }
+  .faq details { border-bottom:1px solid var(--border); padding:12px 0; }
+  .faq summary { cursor:pointer; font-weight:600; font-size:14px; }
+  .faq p { margin:10px 0 2px; }
+  .related { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; margin-top:14px; }
+  .related a { display:block; padding:14px; border:1px solid var(--border); border-radius:10px;
+    background:var(--surface); font-size:14px; font-weight:600; }
+  .related a:hover { border-color:var(--primary); text-decoration:none; }
+  .related span { display:block; font-size:12px; color:var(--text-muted); font-weight:400; margin-top:3px; }
+  .ad-slot { margin:26px 0; min-height:90px; border:1px dashed var(--border); border-radius:10px;
+    display:grid; place-items:center; color:var(--text-muted); font-size:12px; background:var(--surface-2); }
+  footer { margin-top:40px; padding:24px 0 34px; border-top:1px solid var(--border);
+    color:var(--text-muted); font-size:13px; text-align:center; }
+  .toast { position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(80px);
+    background:var(--text); color:var(--bg); padding:10px 20px; border-radius:99px; font-size:13px; font-weight:600;
+    opacity:0; transition:.25s; pointer-events:none; z-index:99; }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  @media (max-width:820px) {
+    .panes { grid-template-columns:1fr; }
+    .pane + .pane { border-left:none; border-top:1px solid var(--border); }
+    textarea, pre { height:300px; }
+    .nav-links a:not(.keep) { display:none; }
+    .hero h1 { font-size:24px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <a href="#" class="logo"><span class="logo-mark">DEV</span>开发者工具箱</a>
+    <div class="nav-links">
+      <a href="../json-formatter/index.html" class="keep">JSON 工具</a>
+      <a href="index.html" class="active">XML 工具</a>
+      <a href="#">编码转换</a>
+      <a href="#">正则测试</a>
+      <button class="icon-btn" id="themeBtn" title="切换主题" aria-label="切换主题">🌙</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>在线 XML 格式化工具</h1>
+    <p>粘贴 XML 即可一键美化缩进、压缩体积、校验语法并高亮显示。所有处理都在你的浏览器本地完成，文件不会上传到任何服务器。</p>
+    <div class="badges">
+      <span class="badge">✓ 完全免费</span>
+      <span class="badge">✓ 本地处理不上传</span>
+      <span class="badge">✓ 无需注册</span>
+      <span class="badge">✓ 支持大文件</span>
+    </div>
+  </section>
+
+  <div class="toolbar">
+    <button class="btn btn-primary" id="formatBtn">格式化</button>
+    <button class="btn" id="minifyBtn">压缩</button>
+    <button class="btn" id="validateBtn">校验</button>
+    <div class="sep"></div>
+    <select id="indentSel" title="缩进方式">
+      <option value="2">2 空格</option>
+      <option value="4">4 空格</option>
+      <option value="tab">Tab</option>
+    </select>
+    <button class="btn btn-ghost" id="sampleBtn">示例</button>
+    <label class="file-label">上传文件<input type="file" id="fileInput" accept=".xml,.xsd,.xsl,.svg,.plist,.xml,text/xml,application/xml"></label>
+    <div class="spacer"></div>
+    <button class="btn" id="copyBtn">复制结果</button>
+    <button class="btn" id="downloadBtn">下载</button>
+    <button class="btn btn-ghost" id="clearBtn">清空</button>
+  </div>
+
+  <div class="panes">
+    <div class="pane">
+      <div class="pane-head"><span>输入 XML</span><span id="inputMeta">0 字符</span></div>
+      <textarea id="input" spellcheck="false" placeholder="在此粘贴 XML 内容，或将文件拖放到此区域...&#10;例如：&#10;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;root&gt;&lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;/root&gt;"></textarea>
+    </div>
+    <div class="pane">
+      <div class="pane-head"><span>输出结果（高亮预览）</span><span id="outputMeta">0 字符</span></div>
+      <pre id="output"><code></code></pre>
+    </div>
+  </div>
+
+  <div class="statusbar">
+    <span id="status" class="status-item">就绪 — 输入 XML 后点击「格式化」</span>
+    <span class="status-item">行数 <b id="lineCount">0</b></span>
+    <span class="status-item">字符 <b id="charCount">0</b></span>
+    <span class="status-item">大小 <b id="byteCount">0 B</b></span>
+    <span class="status-item">元素 <b id="nodeCount">—</b></span>
+  </div>
+
+  <div class="ad-slot">广告位预留 · 接入 AdSense 后替换此容器</div>
+
+  <section class="notice">
+    <h2>关于这个 XML 格式化工具</h2>
+    <p>这是一个免费的在线 XML 工具，面向开发者、测试工程师和数据对接人员。它把压缩在一行的 XML 按层级缩进美化，让结构一目了然；也可以反向把带缩进的 XML 压缩成单行，减少传输体积。同时提供语法校验，帮助你快速定位标签未闭合、属性缺引号等常见错误。</p>
+    <h3>主要功能</h3>
+    <ul>
+      <li><b>格式化 / 美化</b>：自动补齐层级缩进，支持 2 空格、4 空格或 Tab。</li>
+      <li><b>压缩</b>：移除标签之间的空白，减小文件体积。</li>
+      <li><b>语法校验</b>：基于浏览器 XML 解析器，发现结构错误并提示位置。</li>
+      <li><b>语法高亮</b>：区分标签、属性、文本、注释、CDATA，阅读更轻松。</li>
+      <li><b>本地处理</b>：所有操作在浏览器内完成，敏感配置文件也不用担心泄露。</li>
+    </ul>
+    <h3>常见用途</h3>
+    <p>接口返回的 XML 报文调试、Spring / Android 配置文件整理、SVG 与 XSD 文件查看、SOAP 消息排查、RSS / Sitemap 检查等。</p>
+  </section>
+
+  <section class="notice faq">
+    <h2>常见问题</h2>
+    <details><summary>我的 XML 会被上传或保存吗？</summary><p>不会。格式化、压缩、校验全部通过浏览器本地 JavaScript 完成，页面不发起任何上传请求。</p></details>
+    <details><summary>为什么校验提示成功但格式化结果看起来变了？</summary><p>格式化会规范化标签之间的空白与缩进，并合并纯文本节点的空白，这是正常行为，不会改变 XML 的语义结构。</p></details>
+    <details><summary>支持多大的文件？</summary><p>建议 5 MB 以内。超大文件受浏览器内存限制，可能出现卡顿。</p></details>
+    <details><summary>可以处理 SVG / XHTML 吗？</summary><p>可以，它们本质上都是 XML。自闭合标签与属性会被正确保留。</p></details>
+  </section>
+
+  <section class="notice">
+    <h2>相关工具</h2>
+    <div class="related">
+      <a href="../json-formatter/index.html">JSON 格式化<span>美化、压缩与校验 JSON</span></a>
+      <a href="#">XML 转 JSON<span>结构转换与字段映射</span></a>
+      <a href="#">HTML 格式化<span>前端代码美化工具</span></a>
+      <a href="#">Base64 编码<span>在线编码与解码</span></a>
+      <a href="#">URL 编码<span>参数转义与还原</span></a>
+      <a href="#">正则测试器<span>实时匹配与调试</span></a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 开发者工具箱 · 所有工具均可在本地浏览器免费使用</div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var $ = function (id) { return document.getElementById(id); };
+  var input = $('input'), output = $('output').querySelector('code');
+
+  /* ---------- 主题 ---------- */
+  var themeBtn = $('themeBtn');
+  function setTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    themeBtn.textContent = (t === 'dark') ? '☀️' : '🌙';
+    try { localStorage.setItem('xmlfmt-theme', t); } catch (e) {}
+  }
+  setTheme((function () {
+    try { return localStorage.getItem('xmlfmt-theme') || 'light'; } catch (e) { return 'light'; }
+  })());
+  themeBtn.addEventListener('click', function () {
+    setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+
+  /* ---------- 分词器 ---------- */
+  // 将 XML 拆成 token，保留原始文本，仅在 token 之间插入缩进与换行
+  function tokenize(xml) {
+    var tokens = [];
+    var re = /<!--[\s\S]*?-->|<!\[CDATA\[[\s\S]*?\]\]>|<!DOCTYPE[\s\S]*?>|<\?[\s\S]*?\?>|<\/[^>]*>|<(?:[^<>"']|"[^"]*"|'[^']*')*>/g;
+    var last = 0, m;
+    while ((m = re.exec(xml)) !== null) {
+      if (m.index > last) tokens.push({ type: 'text', value: xml.slice(last, m.index) });
+      var s = m[0], type = 'open';
+      if (s.slice(0, 4) === '<!--') type = 'comment';
+      else if (s.slice(0, 9) === '<![CDATA[') type = 'cdata';
+      else if (s.slice(0, 9).toUpperCase() === '<!DOCTYPE') type = 'doctype';
+      else if (s.slice(0, 2) === '<?') type = 'pi';
+      else if (s.slice(0, 2) === '</') type = 'close';
+      else if (/\/>$/.test(s.replace(/\s+$/, ''))) type = 'selfclose';
+      tokens.push({ type: type, value: s });
+      last = re.lastIndex;
+    }
+    if (last < xml.length) tokens.push({ type: 'text', value: xml.slice(last) });
+    return tokens;
+  }
+
+  function getIndent() {
+    var v = $('indentSel').value;
+    return v === 'tab' ? '\t' : new Array(parseInt(v, 10) + 1).join(' ');
+  }
+
+  /* ---------- 格式化 ---------- */
+  function formatXML(xml, indent) {
+    var tokens = tokenize(xml), lines = [], level = 0, i = 0;
+    function pad(n) { return new Array(n + 1).join(indent); }
+    while (i < tokens.length) {
+      var t = tokens[i], v = t.value.trim();
+      if (!v) { i++; continue; }
+
+      if (t.type === 'open') {
+        // 前瞻：跳过纯空白文本，找到下一个有实质内容的 token
+        function nextSignificant(from) {
+          var j = from;
+          while (j < tokens.length && tokens[j].type === 'text' && !tokens[j].value.trim()) j++;
+          return tokens[j] || null;
+        }
+        var consume = 1; // 需要消费的 token 数
+        var n1 = nextSignificant(i + 1);
+        // 叶子元素（开始标签 + 纯文本 + 结束标签）保持单行，更易读
+        if (n1 && n1.type === 'text' && n1.value.trim()) {
+          var n2 = nextSignificant(tokens.indexOf(n1) + 1);
+          if (n2 && n2.type === 'close') {
+            lines.push(pad(level) + v + n1.value.trim() + n2.value.trim());
+            i = tokens.indexOf(n2) + 1;
+            continue;
+          }
+        }
+        // 空元素 <a></a> 也保持单行
+        if (n1 && n1.type === 'close') {
+          lines.push(pad(level) + v + n1.value.trim());
+          i = tokens.indexOf(n1) + 1;
+          continue;
+        }
+        lines.push(pad(level) + v);
+        level++;
+        i += consume;
+      } else if (t.type === 'close') {
+        level = Math.max(0, level - 1);
+        lines.push(pad(level) + v);
+        i++;
+      } else if (t.type === 'cdata') {
+        // CDATA 内部内容原样保留，整体按当前层级缩进
+        var parts = t.value.split('\n');
+        lines.push(pad(level) + parts[0]);
+        for (var k = 1; k < parts.length; k++) lines.push(pad(level) + parts[k]);
+        i++;
+      } else if (t.type === 'text') {
+        lines.push(pad(level) + v);
+        i++;
+      } else {
+        lines.push(pad(level) + v);
+        i++;
+      }
+    }
+    return lines.join('\n');
+  }
+
+  /* ---------- 压缩 ---------- */
+  function minifyXML(xml) {
+    return tokenize(xml).map(function (t) {
+      if (t.type !== 'text') return t.value;
+      // 纯空白文本节点（标签之间的缩进/换行）直接删除；
+      // 有内容的文本节点保留内容，仅折叠多余空白，避免误删语义空格
+      var s = t.value.trim();
+      if (!s) return '';
+      return s.replace(/\s+/g, ' ');
+    }).join('').trim();
+  }
+
+  /* ---------- 校验 ---------- */
+  function validateXML(xml) {
+    var doc = new DOMParser().parseFromString(xml, 'application/xml');
+    var err = doc.getElementsByTagName('parsererror')[0];
+    if (err) {
+      var msg = err.textContent || 'XML 语法错误';
+      // 不同浏览器返回格式不同，尽量提取最后一段有用信息
+      var parts = msg.split('\n').filter(function (s) { return s.trim(); });
+      return { ok: false, msg: parts[parts.length - 1] || msg };
+    }
+    return { ok: true, count: doc.getElementsByTagName('*').length };
+  }
+
+  /* ---------- 高亮 ---------- */
+  function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function highlight(xml) {
+    return tokenize(xml).map(function (t) {
+      var v = esc(t.value);
+      var cls = t.type;
+      if (t.type === 'open' || t.type === 'close' || t.type === 'selfclose') {
+        // 属性名高亮：紧跟 = 引号 的标识符
+        v = v.replace(/([A-Za-z_:][\w:.\-]*)(\s*=)(\s*)(["'])/g,
+          '<span class="tok-attr">$1</span>$2$3$4');
+      }
+      return '<span class="tok-' + cls + '">' + v + '</span>';
+    }).join('');
+  }
+
+  /* ---------- 渲染与统计 ---------- */
+  function setStatus(text, cls) { $('status').textContent = text; $('status').className = 'status-item ' + (cls || ''); }
+  function updateMeta() {
+    var raw = input.value;
+    $('inputMeta').textContent = raw.length + ' 字符';
+    $('lineCount').textContent = raw ? raw.split('\n').length : 0;
+    $('charCount').textContent = raw.length;
+    var bytes = new Blob([raw]).size;
+    $('byteCount').textContent = bytes > 1048576 ? (bytes / 1048576).toFixed(2) + ' MB' :
+      bytes > 1024 ? (bytes / 1024).toFixed(1) + ' KB' : bytes + ' B';
+  }
+  function renderResult(text) {
+    output.innerHTML = text ? highlight(text) : '';
+    $('outputMeta').textContent = text.length + ' 字符';
+    $('nodeCount').textContent = '—';
+    try { localStorage.setItem('xmlfmt-last', input.value); } catch (e) {}
+  }
+
+  function doFormat() {
+    var raw = input.value.trim();
+    if (!raw) { setStatus('请先输入 XML 内容', 'status-err'); return; }
+    var result = formatXML(raw, getIndent());
+    renderResult(result);
+    var v = validateXML(result);
+    if (v.ok) { setStatus('✓ 格式化完成，XML 语法有效', 'status-ok'); $('nodeCount').textContent = v.count; }
+    else setStatus('已完成格式化，但语法校验未通过：' + v.msg, 'status-err');
+  }
+  function doMinify() {
+    var raw = input.value.trim();
+    if (!raw) { setStatus('请先输入 XML 内容', 'status-err'); return; }
+    var result = minifyXML(raw);
+    renderResult(result);
+    setStatus('✓ 压缩完成，已移除标签间空白', 'status-ok');
+  }
+  function doValidate() {
+    var raw = input.value.trim();
+    if (!raw) { setStatus('请先输入 XML 内容', 'status-err'); return; }
+    var v = validateXML(raw);
+    if (v.ok) { setStatus('✓ XML 语法有效，共 ' + v.count + ' 个元素', 'status-ok'); $('nodeCount').textContent = v.count; }
+    else setStatus('✗ 语法错误：' + v.msg, 'status-err');
+  }
+
+  /* ---------- 示例 ---------- */
+  var sample = '<?xml version="1.0" encoding="UTF-8"?>\n<catalog><book id="1"><title>深入浅出 XML</title><author>张三</author><price currency="CNY">59.00</price></book><book id="2"><title>Web 开发实战</title><author>李四</author><price currency="CNY">79.00</price><!-- 推荐 --></book></catalog>';
+  $('sampleBtn').addEventListener('click', function () { input.value = sample; input.dispatchEvent(new Event('input')); doFormat(); });
+
+  /* ---------- 按钮 ---------- */
+  $('formatBtn').addEventListener('click', doFormat);
+  $('minifyBtn').addEventListener('click', doMinify);
+  $('validateBtn').addEventListener('click', doValidate);
+  $('clearBtn').addEventListener('click', function () {
+    input.value = ''; output.innerHTML = ''; $('outputMeta').textContent = '0 字符';
+    $('nodeCount').textContent = '—'; updateMeta(); setStatus('已清空'); input.focus();
+  });
+  input.addEventListener('input', updateMeta);
+
+  function toast(msg) {
+    var el = $('toast'); el.textContent = msg; el.classList.add('show');
+    clearTimeout(toast._t); toast._t = setTimeout(function () { el.classList.remove('show'); }, 1800);
+  }
+  $('copyBtn').addEventListener('click', function () {
+    var text = output.textContent;
+    if (!text) { toast('没有可复制的结果'); return; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { toast('已复制到剪贴板'); }, fallback);
+    } else fallback();
+    function fallback() {
+      var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta);
+      ta.select(); try { document.execCommand('copy'); toast('已复制到剪贴板'); } catch (e) { toast('复制失败'); }
+      document.body.removeChild(ta);
+    }
+  });
+  $('downloadBtn').addEventListener('click', function () {
+    var text = output.textContent;
+    if (!text) { toast('没有可下载的结果'); return; }
+    var blob = new Blob([text], { type: 'application/xml;charset=utf-8' });
+    var url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = 'formatted-' + Date.now() + '.xml'; a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    toast('已开始下载');
+  });
+
+  /* ---------- 文件与拖拽 ---------- */
+  function readFile(file) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (e) { input.value = e.target.result; updateMeta(); doFormat(); toast('已载入 ' + file.name); };
+    reader.readAsText(file, 'UTF-8');
+  }
+  $('fileInput').addEventListener('change', function (e) { readFile(e.target.files[0]); });
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    input.addEventListener(ev, function (e) { e.preventDefault(); input.style.outline = '2px solid var(--primary)'; });
+  });
+  ['dragleave', 'drop'].forEach(function (ev) {
+    input.addEventListener(ev, function (e) { e.preventDefault(); input.style.outline = ''; });
+  });
+  input.addEventListener('drop', function (e) { readFile(e.dataTransfer.files[0]); });
+
+  /* ---------- 快捷键 ---------- */
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); doFormat(); }
+  });
+
+  /* ---------- 恢复上次内容 ---------- */
+  try {
+    var last = localStorage.getItem('xmlfmt-last');
+    if (last) { input.value = last; updateMeta(); renderResult(formatXML(last, getIndent())); }
+  } catch (e) {}
+  updateMeta();
+})();
+</script>
+</body>
+</html>
